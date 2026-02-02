@@ -1,11 +1,11 @@
-import { CreateProduct } from "./components/modules"
+import { CreateProduct } from "./components/modules";
 
 function App() {
   return (
     <>
       <CreateProduct />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

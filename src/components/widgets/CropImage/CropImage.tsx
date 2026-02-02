@@ -6,20 +6,23 @@ import {
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
-import Cropper, { type Area } from 'react-easy-crop';
-import 'react-easy-crop/react-easy-crop.css';
+} from "react";
+import Cropper, { type Area } from "react-easy-crop";
+import "react-easy-crop/react-easy-crop.css";
 
 export type CropImageRef = {
   getCroppedImage: () => Promise<string | null>;
 };
 
-function createCroppedImage(imgCroppedArea: Area, imageSrc: string): Promise<string> {
+function createCroppedImage(
+  imgCroppedArea: Area,
+  imageSrc: string,
+): Promise<string> {
   return new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = imgCroppedArea.width;
     canvas.height = imgCroppedArea.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     const img = new Image();
     img.src = imageSrc;
     img.onload = () => {
@@ -32,11 +35,11 @@ function createCroppedImage(imgCroppedArea: Area, imageSrc: string): Promise<str
         0,
         0,
         imgCroppedArea.width,
-        imgCroppedArea.height
+        imgCroppedArea.height,
       );
-      resolve(canvas.toDataURL('image/jpeg'));
+      resolve(canvas.toDataURL("image/jpeg"));
     };
-    img.onerror = () => reject(new Error('Failed to load image'));
+    img.onerror = () => reject(new Error("Failed to load image"));
   });
 }
 
@@ -50,9 +53,9 @@ const CropImageBase = forwardRef<
   }
 >(function CropImage(
   { src, setNewImage, orientation, cropOnChange = false },
-  ref
+  ref,
 ) {
-  const [imgAfterCrop, setImgAfterCrop] = useState('');
+  const [imgAfterCrop, setImgAfterCrop] = useState("");
   const innerRef = useRef<ImageCropperInnerRef | null>(null);
 
   useEffect(() => {
@@ -67,7 +70,7 @@ const CropImageBase = forwardRef<
       getCroppedImage: () =>
         innerRef.current?.getCroppedImage() ?? Promise.resolve(null),
     }),
-    []
+    [],
   );
 
   if (!src) return null;
@@ -83,7 +86,7 @@ const CropImageBase = forwardRef<
   );
 });
 
-CropImageBase.displayName = 'CropImage';
+CropImageBase.displayName = "CropImage";
 export const CropImage = memo(CropImageBase);
 
 type ImageCropperInnerRef = {
@@ -154,19 +157,25 @@ function ImageCropper({
     rafRef.current = null;
   }, []);
 
-  const onCropChange = useCallback((c: { x: number; y: number }) => {
-    pendingCropRef.current = c;
-    if (rafRef.current === null) {
-      rafRef.current = requestAnimationFrame(flushPending);
-    }
-  }, [flushPending]);
+  const onCropChange = useCallback(
+    (c: { x: number; y: number }) => {
+      pendingCropRef.current = c;
+      if (rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(flushPending);
+      }
+    },
+    [flushPending],
+  );
 
-  const onZoomChange = useCallback((z: number) => {
-    pendingZoomRef.current = z;
-    if (rafRef.current === null) {
-      rafRef.current = requestAnimationFrame(flushPending);
-    }
-  }, [flushPending]);
+  const onZoomChange = useCallback(
+    (z: number) => {
+      pendingZoomRef.current = z;
+      if (rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(flushPending);
+      }
+    },
+    [flushPending],
+  );
 
   const onCropAreaChange = useCallback(
     (_croppedAreaPercentage: Area, croppedAreaPixels: Area) => {
@@ -180,7 +189,7 @@ function ImageCropper({
         croppedAreaRef.current = croppedAreaPixels;
       }
     },
-    []
+    [],
   );
 
   const onMediaLoaded = useCallback(() => setIsReady(true), []);
@@ -201,7 +210,7 @@ function ImageCropper({
         }, DEBOUNCE_MS);
       }
     },
-    [isReady, image, cropOnChange, setImgAfterCrop]
+    [isReady, image, cropOnChange, setImgAfterCrop],
   );
 
   return (
