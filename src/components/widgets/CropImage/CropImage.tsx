@@ -10,8 +10,6 @@ import {
 import Cropper, { type Area } from 'react-easy-crop';
 import 'react-easy-crop/react-easy-crop.css';
 
-const CROPPER_CONTAINER_STYLE = { position: 'relative' as const, height: 400 };
-
 export type CropImageRef = {
   getCroppedImage: () => Promise<string | null>;
 };
@@ -207,7 +205,7 @@ function ImageCropper({
   );
 
   return (
-    <div className="cropper" style={CROPPER_CONTAINER_STYLE}>
+    <div className="w-full h-[200px] relative">
       <Cropper
         image={image}
         aspect={aspectRatio}
