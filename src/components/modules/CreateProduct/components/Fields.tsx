@@ -61,6 +61,32 @@ export const Fields = () => {
           </div>
 
           <div className="grid gap-2 md:col-span-2">
+            <Label htmlFor="product-slug">
+              Slug <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="product-slug"
+              name="slug"
+              placeholder="e.g. premium-hoodie"
+              autoComplete="off"
+              required
+            />
+          </div>
+
+          <div className="grid gap-2 md:col-span-2">
+            <Label htmlFor="product-short-description">
+              Short description <span className="text-destructive">*</span>
+            </Label>
+            <Textarea
+              id="product-short-description"
+              name="shortDescription"
+              placeholder="A brief summary for listings and previews..."
+              rows={2}
+              required
+            />
+          </div>
+
+          <div className="grid gap-2 md:col-span-2">
             <Label htmlFor="product-description">
               Description <span className="text-destructive">*</span>
             </Label>
