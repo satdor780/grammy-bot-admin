@@ -62,10 +62,16 @@ export const CreateProduct = () => {
     console.log(payload);
   }, [canSubmit, getSubmitPayload, setSubmitAttempted]);
 
+  // window.Telegram?.WebApp?.ready();
+  
+  // const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  // const theme = window.Telegram?.WebApp?.themeParams;
+  // const initData = window.Telegram?.WebApp?.initData;
+
   return (
     <form className="mx-auto w-full p-3 pb-[70px]">
       <h1 className="text-2xl font-semibold tracking-tight pb-2">
-        Create Product
+        Create Product <span>user: </span>
       </h1>
 
       <div
