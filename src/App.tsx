@@ -1,13 +1,20 @@
+import { useEffect } from "react";
 import { CreateProduct } from "./components/modules";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient()
+import { useInit } from "./hooks/useInit";
+import { useTelegramStore } from "./store/telegramStore";
 
 function App() {
+  const initData = useTelegramStore((s) => s.initData);
+  const { mutate: sendInit } = useInit();
+
+  useEffect(() => {
+    if (initData) {
+      sendInit(initData);
+    }
+  }, [initData, sendInit]);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <CreateProduct />
-    </QueryClientProvider>
+    <CreateProduct />
   );
 }
 
