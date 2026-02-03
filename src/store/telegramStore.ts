@@ -6,11 +6,9 @@ type TelegramState = {
   user: WebAppUser | null;
   themeParams: ThemeParams;
   initData: string;
-  initDataUnsafe: WebAppInitData;
+  initDataUnsafe: Partial<WebAppInitData>; // ← changed
   colorScheme: "light" | "dark";
   isReady: boolean;
-
-  // computed / derived поля (можно оставить как есть)
   isPremium: boolean;
   userId: number | null;
 };
