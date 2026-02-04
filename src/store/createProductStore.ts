@@ -12,7 +12,7 @@ export type CreateProductPayload = {
   slug: string;
   shortDescription: string;
   description: string;
-  available: number;
+  tags: string[];
   discounts: { fromQuantity: number; discount: number }[];
 };
 
@@ -22,7 +22,7 @@ type CreateProductState = {
   slug: string;
   shortDescription: string;
   description: string;
-  available: string;
+  tags: string[];
   discountRules: DiscountRuleForm[];
   submitAttempted: boolean;
 };
@@ -33,7 +33,7 @@ const initialState: CreateProductState = {
   slug: "",
   shortDescription: "",
   description: "",
-  available: "",
+  tags: [],
   discountRules: [],
   submitAttempted: false,
 };
@@ -104,7 +104,7 @@ export const useCreateProductStore = create<
       slug: state.slug.trim(),
       shortDescription: state.shortDescription.trim(),
       description: state.description.trim(),
-      available: Number(state.available) || 0,
+      tags: state.tags.filter((t) => t.trim() !== ""),
       discounts: state.discountRules
         .filter((r) => r.fromQuantity !== "" && r.discount !== "")
         .map((r) => ({
@@ -124,8 +124,7 @@ export const useCreateProductStore = create<
       has(state.slug) &&
       has(state.shortDescription) &&
       has(state.description) &&
-      validNumber(state.price) &&
-      validNumber(state.available)
+      validNumber(state.price)
     );
   },
 }));

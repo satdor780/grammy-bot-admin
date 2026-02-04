@@ -11,6 +11,7 @@ import { Input } from "../../../shadcn/ui/input";
 import { Label } from "../../../shadcn/ui/label";
 import { Separator } from "../../../shadcn/ui/separator";
 import { Textarea } from "../../../shadcn/ui/textarea";
+import { TagsInputComponent } from "../../../shared/ui/TagsInputComponent";
 import { useCreateProductStore } from "../../../../store";
 
 export const Fields = () => {
@@ -20,7 +21,7 @@ export const Fields = () => {
     slug,
     shortDescription,
     description,
-    available,
+    tags,
     discountRules,
     submitAttempted,
     setField,
@@ -39,8 +40,6 @@ export const Fields = () => {
   const requiredError = "This field is required.";
   const isEmpty = (v: string) => v.trim() === "";
   const isPriceInvalid = (v: string) =>
-    isEmpty(v) || Number.isNaN(Number(v)) || Number(v) < 0;
-  const isAvailableInvalid = (v: string) =>
     isEmpty(v) || Number.isNaN(Number(v)) || Number(v) < 0;
 
   const showError = (invalid: boolean) => submitAttempted && invalid;
@@ -205,37 +204,13 @@ export const Fields = () => {
             )}
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="product-available">
-              Available (quantity) <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="product-available"
-              name="available"
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              placeholder="e.g. 100"
-              value={available}
-              onChange={(e) => setField("available", e.target.value)}
-              required
-              aria-invalid={showError(isAvailableInvalid(available))}
-              aria-describedby={
-                showError(isAvailableInvalid(available))
-                  ? "product-available-error"
-                  : undefined
-              }
+          <div className="grid gap-2 md:col-span-2">
+            <TagsInputComponent
+              tags={tags}
+              setTags={(value) => setField("tags", value)}
+              label="Tags (optional)"
+              placeholder="Add tag..."
             />
-            {showError(isAvailableInvalid(available)) && (
-              <p
-                id="product-available-error"
-                className="text-xs text-destructive"
-                role="alert"
-              >
-                {requiredError}
-              </p>
-            )}
           </div>
         </div>
 

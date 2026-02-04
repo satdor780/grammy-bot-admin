@@ -13,6 +13,7 @@ export interface CreateProductRequest {
   basePrice: number;
   currency?: "USDT" | "BTC";
   available: number;
+  tags?: string[];
   discounts?: { minQuantity: number; discount: number }[];
   contentTemplate?: string;
   isActive?: boolean;

@@ -37,8 +37,7 @@ export const CreateProduct = () => {
       has(s.slug) &&
       has(s.shortDescription) &&
       has(s.description) &&
-      num(s.price) &&
-      num(s.available)
+      num(s.price)
     );
   });
 
@@ -131,7 +130,8 @@ export const CreateProduct = () => {
         shortDescription: payload.shortDescription,
         fullDescription: payload.description,
         basePrice: payload.price,
-        available: payload.available,
+        available: 0,
+        tags: payload.tags,
         discounts: payload.discounts.map((d) => ({
           minQuantity: d.fromQuantity,
           discount: d.discount,
