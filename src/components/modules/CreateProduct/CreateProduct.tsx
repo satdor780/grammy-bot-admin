@@ -132,11 +132,10 @@ export const CreateProduct = () => {
         basePrice: payload.price,
         available: 0,
         tags: payload.tags,
-        discounts: payload.discounts.map((d) => ({
-          minQuantity: d.fromQuantity,
-          discount: d.discount,
-        })),
+        discounts: payload.discounts,
       });
+
+      
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : "Failed to submit product";
@@ -152,12 +151,6 @@ export const CreateProduct = () => {
     uploadMutation,
     createMutation,
   ]);
-
-  // window.Telegram?.WebApp?.ready();
-  
-  // const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  // const theme = window.Telegram?.WebApp?.themeParams;
-  // const initData = window.Telegram?.WebApp?.initData;
 
   const user = useTelegramStore((s) => s.user);
 

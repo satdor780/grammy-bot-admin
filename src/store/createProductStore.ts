@@ -13,7 +13,8 @@ export type CreateProductPayload = {
   shortDescription: string;
   description: string;
   tags: string[];
-  discounts: { fromQuantity: number; discount: number }[];
+  /** minQuantity >= 1, discount as fraction 0–1 (backend shape) */
+  discounts: { minQuantity: number; discount: number }[];
 };
 
 type CreateProductState = {
@@ -107,10 +108,14 @@ export const useCreateProductStore = create<
       tags: state.tags.filter((t) => t.trim() !== ""),
       discounts: state.discountRules
         .filter((r) => r.fromQuantity !== "" && r.discount !== "")
-        .map((r) => ({
-          fromQuantity: Number(r.fromQuantity) || 0,
-          discount: Number(r.discount) || 0,
-        })),
+        .map((r) => {
+          const minQuantity = Math.max(1, Number(r.fromQuantity) || 1);
+          let discount = Number(r.discount) || 0;
+          if (discount > 1) discount = Math.min(100, discount) / 100;
+          discount = Math.min(1, Math.max(0, discount));
+          return { minQuantity, discount };
+        })
+        .filter((d) => d.discount > 0),
     };
   },
 
