@@ -6,17 +6,27 @@ import {
 import { Button } from "../../shadcn/ui/button";
 import { Fields } from "./components";
 import { PlusIcon } from "lucide-react";
-import { useCreateProductStore } from "../../../store";
+import { useCreateProductStore, useTelegramStore } from "../../../store";
+import { useDebugStore } from "../../../store/debugStore";
+import { useUploadImage } from "../../../hooks/useUploadImage";
+import { useCreateProduct } from "../../../hooks/useCreateProduct";
+import { dataURLtoBlob } from "../../../lib/utils";
 
 const HIDDEN_INPUT_STYLE = { display: "none" as const };
 const PREVIEW_IMG_STYLE = { maxWidth: 200 };
+const DEFAULT_PRODUCT_TYPE = "custom" as const;
 
 export const CreateProduct = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const cropRef = useRef<CropImageRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const initData = useTelegramStore((s) => s.initData);
+  const addError = useDebugStore((s) => s.addError);
+  const addResponse = useDebugStore((s) => s.addResponse);
   const getSubmitPayload = useCreateProductStore((s) => s.getSubmitPayload);
+  const reset = useCreateProductStore((s) => s.reset);
   const setSubmitAttempted = useCreateProductStore((s) => s.setSubmitAttempted);
   const canSubmit = useCreateProductStore((s) => {
     const has = (v: string) => v.trim() !== "";
@@ -31,6 +41,31 @@ export const CreateProduct = () => {
       num(s.available)
     );
   });
+
+  const uploadMutation = useUploadImage({
+    onSuccess: (data) => {
+      addResponse("Image uploaded", data, "uploadImage");
+    },
+    onError: (err) => {
+      addError(err.message ?? "Image upload failed", { error: String(err) }, "uploadImage");
+    },
+  });
+  const createMutation = useCreateProduct({
+    onSuccess: (data) => {
+      addResponse("Product created", data, "createProduct");
+      reset();
+      setSelectedImage(null);
+      setCroppedImage(null);
+      setSubmitError(null);
+    },
+    onError: (err) => {
+      const msg = err.message ?? "Failed to create product";
+      addError(msg, { error: String(err) }, "createProduct");
+      setSubmitError(msg);
+    },
+  });
+
+  const isSubmitting = uploadMutation.isPending || createMutation.isPending;
 
   const handleUploadClick = useCallback(() => {
     fileInputRef.current?.click();
@@ -49,18 +84,74 @@ export const CreateProduct = () => {
   );
 
   const handleSubmit = useCallback(async () => {
+    setSubmitError(null);
     if (!canSubmit) {
       setSubmitAttempted(true);
       return;
     }
+    if (!initData) {
+      const msg = "Telegram initData is required. Open from Telegram.";
+      addError(msg, undefined, "validation");
+      setSubmitError(msg);
+      return;
+    }
 
     const cropped = await cropRef.current?.getCroppedImage();
-    if (cropped) setCroppedImage(cropped);
+    if (!cropped) {
+      const msg = "Please select and crop an image.";
+      addError(msg, undefined, "validation");
+      setSubmitError(msg);
+      setSubmitAttempted(true);
+      return;
+    }
+    setCroppedImage(cropped);
 
     const payload = getSubmitPayload();
+    if (payload.price < 0.01) {
+      const msg = "Price must be at least 0.01";
+      addError(msg, { price: payload.price }, "validation");
+      setSubmitError(msg);
+      return;
+    }
 
-    console.log(payload);
-  }, [canSubmit, getSubmitPayload, setSubmitAttempted]);
+    try {
+      const blob = dataURLtoBlob(cropped);
+      const uploadRes = await uploadMutation.mutateAsync({
+        imageFile: blob,
+        initData,
+      });
+      const imageUrl = uploadRes.url;
+
+      await createMutation.mutateAsync({
+        initData,
+        type: DEFAULT_PRODUCT_TYPE,
+        title: payload.name,
+        slug: payload.slug,
+        image: imageUrl,
+        shortDescription: payload.shortDescription,
+        fullDescription: payload.description,
+        basePrice: payload.price,
+        available: payload.available,
+        discounts: payload.discounts.map((d) => ({
+          minQuantity: d.fromQuantity,
+          discount: d.discount,
+        })),
+      });
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : "Failed to submit product";
+      addError(msg, err instanceof Error ? { stack: err.stack } : undefined, "submit");
+      setSubmitError(msg);
+    }
+  }, [
+    canSubmit,
+    initData,
+    addError,
+    getSubmitPayload,
+    setSubmitAttempted,
+    uploadMutation,
+    createMutation,
+  ]);
 
   // window.Telegram?.WebApp?.ready();
   
@@ -68,10 +159,12 @@ export const CreateProduct = () => {
   // const theme = window.Telegram?.WebApp?.themeParams;
   // const initData = window.Telegram?.WebApp?.initData;
 
+  const user = useTelegramStore((s) => s.user);
+
   return (
     <form className="mx-auto w-full p-3 pb-[70px]">
       <h1 className="text-2xl font-semibold tracking-tight pb-2">
-        Create Product <span>user: </span>
+        Create Product <span>user: {user?.first_name}</span>
       </h1>
 
       <div
@@ -109,14 +202,19 @@ export const CreateProduct = () => {
           <img src={croppedImage} alt="Cropped" style={PREVIEW_IMG_STYLE} />
         </div>
       )}
+      {submitError && (
+        <p className="text-sm text-destructive mt-2" role="alert">
+          {submitError}
+        </p>
+      )}
       <Button
         type="button"
         onClick={handleSubmit}
+        disabled={!canSubmit || isSubmitting}
         className="w-full my-3 fixed max-w-[calc(100%-30px)] -translate-x-2/4 left-2/4 bottom-2.5"
-        style={{ opacity: !canSubmit ? 0.5 : 1 }}
-        // disabled={!canSubmit}
+        style={{ opacity: !canSubmit || isSubmitting ? 0.5 : 1 }}
       >
-        Submit
+        {isSubmitting ? "Submitting…" : "Submit"}
       </Button>
     </form>
   );
