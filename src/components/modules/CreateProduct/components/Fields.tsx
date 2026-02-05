@@ -262,10 +262,10 @@ export const Fields = () => {
                         min={1}
                         step="1"
                         placeholder="e.g. 10"
-                        value={rule.fromQuantity}
+                        value={rule.minQuantity}
                         onChange={(e) =>
                           updateDiscountRule(rule.id, {
-                            fromQuantity: e.target.value,
+                            minQuantity: Number(e.target.value),
                           })
                         }
                       />
@@ -284,7 +284,7 @@ export const Fields = () => {
                         value={rule.discount}
                         onChange={(e) =>
                           updateDiscountRule(rule.id, {
-                            discount: e.target.value,
+                            discount: Number(e.target.value),
                           })
                         }
                       />

@@ -2,8 +2,8 @@ import { create } from "zustand";
 
 export type DiscountRuleForm = {
   id: string;
-  fromQuantity: string;
-  discount: string;
+  minQuantity: number;
+  discount: number;
 };
 
 export type CreateProductPayload = {
@@ -13,7 +13,6 @@ export type CreateProductPayload = {
   shortDescription: string;
   description: string;
   tags: string[];
-  /** minQuantity >= 1, discount as fraction 0–1 (backend shape) */
   discounts: { minQuantity: number; discount: number }[];
 };
 
@@ -48,7 +47,7 @@ type CreateProductActions = {
   addDiscountRule: () => void;
   updateDiscountRule: (
     id: string,
-    updates: Partial<Pick<DiscountRuleForm, "fromQuantity" | "discount">>,
+    updates: Partial<Pick<DiscountRuleForm, "minQuantity" | "discount">>,
   ) => void;
   removeDiscountRule: (id: string) => void;
   reset: () => void;
@@ -74,8 +73,8 @@ export const useCreateProductStore = create<
           ...state.discountRules,
           {
             id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-            fromQuantity: "",
-            discount: "",
+            minQuantity: 0,
+            discount: 0,
           },
         ],
       };
@@ -106,16 +105,7 @@ export const useCreateProductStore = create<
       shortDescription: state.shortDescription.trim(),
       description: state.description.trim(),
       tags: state.tags.filter((t) => t.trim() !== ""),
-      discounts: state.discountRules
-        .filter((r) => r.fromQuantity !== "" && r.discount !== "")
-        .map((r) => {
-          const minQuantity = Math.max(1, Number(r.fromQuantity) || 1);
-          let discount = Number(r.discount) || 0;
-          if (discount > 1) discount = Math.min(100, discount) / 100;
-          discount = Math.min(1, Math.max(0, discount));
-          return { minQuantity, discount };
-        })
-        .filter((d) => d.discount > 0),
+      discounts: state.discountRules,
     };
   },
 
