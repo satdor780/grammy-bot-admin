@@ -1,37 +1,29 @@
 export const PRODUCT_TYPE = {
-  MAIL: 'mail',
-  FULL: 'full',
-} as const
+  MAIL: "mail",
+  FULL: "full",
+  CUSTOM: "custom",
+} as const;
 
-export type ProductType =
-  typeof PRODUCT_TYPE[keyof typeof PRODUCT_TYPE]
-
-export interface MailProduct {
-  _id: string
-  type: 'mail'
-  price: number
-  data: {
-    mail: string
-    firstName: string
-    lastName: string
-    age: number
-  }
-  createdAt: string
+export interface Product {
+  _id: string;
+  type: string;
+  slug: string;
+  title: string;
+  image: string;
+  shortDescription: string;
+  fullDescription: string;
+  basePrice: number;
+  currency: string;
+  available: number;
+  discounts: Discount[];
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  id: string;
 }
 
-export interface FullProduct {
-  _id: string
-  type: 'full'
-  price: number
-  data: {
-    fullName: string
-    address: string
-    city: string
-    state: string
-    zipCode: string
-    creditScore: number
-  }
-  createdAt: string
+export interface Discount {
+  minQuantity: number;
+  discount: number;
 }
-
-export type Product = MailProduct | FullProduct
