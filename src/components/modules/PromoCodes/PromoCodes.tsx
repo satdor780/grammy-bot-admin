@@ -216,12 +216,12 @@ export const PromoCodes = () => {
                             <> / {promo.maxUses}</>
                           )}
                         </span>
-                        <span>
+                        {/* <span>
                           Тип скидки:{" "}
                           {promo.discountType === "fixed"
                             ? "фиксированная"
                             : "процент"}
-                        </span>
+                        </span> */}
                         {formatValidity(promo) && (
                           <span>Срок: {formatValidity(promo)}</span>
                         )}
