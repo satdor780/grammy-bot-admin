@@ -312,6 +312,52 @@ export const PromoCodes = () => {
 
             <div className="space-y-2">
               <label
+                htmlFor="expiresAt"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1 block"
+              >
+                Срок действия (необязательно)
+              </label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className={cn(
+                      INPUT_CLASS,
+                      "flex items-center gap-2 text-left font-normal",
+                      !formData.expiresAt && "text-muted-foreground",
+                    )}
+                  >
+                    <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
+                    {formData.expiresAt
+                      ? new Date(formData.expiresAt).toLocaleString("ru-RU", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })
+                      : "Выберите дату и время"}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-3">
+                    <Input
+                      type="datetime-local"
+                      value={formData.expiresAt}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          expiresAt: e.target.value,
+                        }))
+                      }
+                      className={INPUT_CLASS}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+
+            {/* <div className="space-y-2">
+              <label
                 htmlFor="discountType"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1 block"
               >
@@ -327,7 +373,7 @@ export const PromoCodes = () => {
                 <option value="percent">Процент (%)</option>
                 <option value="fixed">Фиксированная сумма</option>
               </select>
-            </div>
+            </div> */}
 
             <div className="space-y-2">
               <label
@@ -372,51 +418,7 @@ export const PromoCodes = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <label
-                htmlFor="expiresAt"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1 block"
-              >
-                Срок действия (необязательно)
-              </label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className={cn(
-                      INPUT_CLASS,
-                      "flex items-center gap-2 text-left font-normal",
-                      !formData.expiresAt && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
-                    {formData.expiresAt
-                      ? new Date(formData.expiresAt).toLocaleString("ru-RU", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })
-                      : "Выберите дату и время"}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <div className="p-3">
-                    <Input
-                      type="datetime-local"
-                      value={formData.expiresAt}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          expiresAt: e.target.value,
-                        }))
-                      }
-                      className={INPUT_CLASS}
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-
+            
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-medium mb-2">
