@@ -1,5 +1,5 @@
-import * as React from "react"
-import { useNavigate } from "react-router-dom"
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Command,
   CommandDialog,
@@ -8,23 +8,23 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../../../shadcn/ui/command"
+} from "../../../shadcn/ui/command";
 
 const routes = [
   { name: "Create Product", path: "/create-product" },
   { name: "Promo codes", path: "/promo-codes" },
-]
+];
 
 export function HeaderMenu({
   open,
   setOpen,
-  setActivePage
+  setActivePage,
 }: {
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setActivePage: React.Dispatch<React.SetStateAction<string>>
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setActivePage: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
@@ -37,9 +37,9 @@ export function HeaderMenu({
               <CommandItem
                 key={route.path}
                 onSelect={() => {
-                  navigate(route.path)
-                  setOpen(false)
-                  setActivePage(route.name)
+                  navigate(route.path);
+                  setOpen(false);
+                  setActivePage(route.name);
                 }}
               >
                 {route.name}
@@ -49,5 +49,5 @@ export function HeaderMenu({
         </CommandList>
       </Command>
     </CommandDialog>
-  )
+  );
 }

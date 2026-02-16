@@ -12,7 +12,6 @@ import { useUploadImage } from "../../../hooks/useUploadImage";
 import { useCreateProduct } from "../../../hooks/useCreateProduct";
 import { dataURLtoBlob } from "@/lib";
 
-
 const HIDDEN_INPUT_STYLE = { display: "none" as const };
 const PREVIEW_IMG_STYLE = { maxWidth: 200 };
 const DEFAULT_PRODUCT_TYPE = "custom" as const;
@@ -47,7 +46,11 @@ export const CreateProduct = () => {
       addResponse("Image uploaded", data, "uploadImage");
     },
     onError: (err) => {
-      addError(err.message ?? "Image upload failed", { error: String(err) }, "uploadImage");
+      addError(
+        err.message ?? "Image upload failed",
+        { error: String(err) },
+        "uploadImage",
+      );
     },
   });
   const createMutation = useCreateProduct({
@@ -135,12 +138,14 @@ export const CreateProduct = () => {
         tags: payload.tags,
         discounts: payload.discounts,
       });
-
-      
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : "Failed to submit product";
-      addError(msg, err instanceof Error ? { stack: err.stack } : undefined, "submit");
+      addError(
+        msg,
+        err instanceof Error ? { stack: err.stack } : undefined,
+        "submit",
+      );
       setSubmitError(msg);
     }
   }, [
