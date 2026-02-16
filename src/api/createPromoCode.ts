@@ -9,6 +9,7 @@ export interface CreatePromoCodeRequest {
   discount: number;
   discountType: "percent" | "fixed";
   maxUses?: number;
+  expiresAt?: string; // ISO date string (datetime-local format: YYYY-MM-DDTHH:mm)
   appliesToProducts?: string[];
 }
 
