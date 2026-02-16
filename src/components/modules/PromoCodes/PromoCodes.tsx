@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Copy, Plus, Check, X } from "lucide-react";
+import { Copy, Plus, Check, X, CalendarIcon } from "lucide-react";
 import { useTelegramStore } from "../../../store/telegramStore";
 import { getPromoCodes, createPromoCode } from "../../../api";
+import { Input } from "@/components/shadcn/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/shadcn/ui/popover";
+import { cn } from "@/lib/utils";
 import { init } from "../../../api/init";
 import type { PromoCode } from "../../../api/getPromoCodes";
 import type { Product } from "../../../types";
@@ -14,6 +21,7 @@ interface PromoCodeFormData {
   discountType: "percent" | "fixed";
   discount: string;
   maxUsages: string;
+  expiresAt: string; // datetime-local: YYYY-MM-DDTHH:mm
 }
 
 const INPUT_CLASS =
@@ -49,6 +57,7 @@ export const PromoCodes = () => {
     discountType: "percent",
     discount: "",
     maxUsages: "",
+    expiresAt: "",
   });
 
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
@@ -74,7 +83,10 @@ export const PromoCodes = () => {
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value as "percent" | "fixed" }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value as "percent" | "fixed",
+    }));
   };
 
   const addProduct = (productId: string) => {
@@ -125,6 +137,7 @@ export const PromoCodes = () => {
         discount: discountNum,
         discountType: formData.discountType,
         maxUses: maxUsages,
+        expiresAt: formData.expiresAt.trim() || undefined,
         appliesToProducts:
           selectedProductIds.length > 0 ? selectedProductIds : undefined,
       });
@@ -135,6 +148,7 @@ export const PromoCodes = () => {
         discountType: "percent",
         discount: "",
         maxUsages: "",
+        expiresAt: "",
       });
       setSelectedProductIds([]);
       alert("Промокод успешно создан!");
@@ -142,6 +156,15 @@ export const PromoCodes = () => {
       const msg = err instanceof Error ? err.message : "Не удалось создать промокод";
       alert(msg);
     }
+  };
+
+  const formatValidity = (promo: PromoCode) => {
+    if (!promo.expiresAt) return null;
+    const date = new Date(promo.expiresAt);
+    return `До ${date.toLocaleString("ru-RU", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    })}`;
   };
 
   const formatDiscount = (promo: PromoCode) => {
@@ -199,6 +222,9 @@ export const PromoCodes = () => {
                             ? "фиксированная"
                             : "процент"}
                         </span>
+                        {formatValidity(promo) && (
+                          <span>Срок: {formatValidity(promo)}</span>
+                        )}
                       </div>
                       <div className="flex justify-end items-center w-full pt-5">
                         <button
@@ -344,6 +370,50 @@ export const PromoCodes = () => {
                 onChange={handleInputChange}
                 className={INPUT_CLASS}
               />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="expiresAt"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 pb-1 block"
+              >
+                Срок действия (необязательно)
+              </label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className={cn(
+                      INPUT_CLASS,
+                      "flex items-center gap-2 text-left font-normal",
+                      !formData.expiresAt && "text-muted-foreground",
+                    )}
+                  >
+                    <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
+                    {formData.expiresAt
+                      ? new Date(formData.expiresAt).toLocaleString("ru-RU", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })
+                      : "Выберите дату и время"}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-3">
+                    <Input
+                      type="datetime-local"
+                      value={formData.expiresAt}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          expiresAt: e.target.value,
+                        }))
+                      }
+                      className={INPUT_CLASS}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

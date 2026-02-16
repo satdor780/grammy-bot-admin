@@ -10,6 +10,7 @@ export interface PromoCode {
   uses: number;
   maxUses?: number;
   appliesToProducts?: string[];
+  expiresAt?: string;
   createdAt: string;
   updatedAt: string;
 }
