@@ -152,14 +152,8 @@ export const CreateProduct = () => {
     createMutation,
   ]);
 
-  const user = useTelegramStore((s) => s.user);
-
   return (
-    <form className="mx-auto w-full p-3 pb-[70px]">
-      <h1 className="text-2xl font-semibold tracking-tight pb-2">
-        Create Product <span>user: {user?.first_name}</span>
-      </h1>
-
+    <form className="mx-auto w-full py-3 pb-[70px]">
       <div
         className="w-full h-[200px] bg-[#101010] mb-3 flex items-center justify-center"
         onClick={handleUploadClick}

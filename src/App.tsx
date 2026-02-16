@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { CreateProduct } from "./components/modules";
-import { DebugPanel } from "./components/widgets";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { CreateProduct, PromoCodes } from "./components/modules";
+import { DebugPanel, Header } from "./components/widgets";
 import { useInit } from "./hooks/useInit";
 import { useDebugStore } from "./store/debugStore";
 import { useTelegramStore } from "./store/telegramStore";
@@ -22,10 +23,15 @@ function App() {
   }, [initData, sendInit]);
 
   return (
-    <>
-      <CreateProduct />
+    <div className="px-3">
+      <Header />
+      <Routes>
+        <Route path="/" element={<Navigate to="/create-product" replace />} />
+        <Route path="/create-product" element={<CreateProduct />} />
+        <Route path="/promo-codes" element={<PromoCodes />} />
+      </Routes>
       <DebugPanel />
-    </>
+    </div>
   );
 }
 
