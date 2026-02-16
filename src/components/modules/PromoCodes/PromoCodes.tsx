@@ -81,13 +81,13 @@ export const PromoCodes = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value as "percent" | "fixed",
-    }));
-  };
+  // const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value as "percent" | "fixed",
+  //   }));
+  // };
 
   const addProduct = (productId: string) => {
     if (selectedProductIds.includes(productId)) return;
