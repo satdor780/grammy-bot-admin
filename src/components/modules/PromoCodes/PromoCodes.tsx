@@ -142,9 +142,8 @@ export const PromoCodes = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                     <span className="truncate">Источник: {promo.source}</span>
-                    <span>•</span>
                     <span>Использований: <b className="text-white">{promo.usageCount}</b></span>
                   </div>
                   <div className="flex justify-end items-center w-full pt-5">
