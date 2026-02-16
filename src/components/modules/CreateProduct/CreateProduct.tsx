@@ -10,7 +10,8 @@ import { useCreateProductStore, useTelegramStore } from "../../../store";
 import { useDebugStore } from "../../../store/debugStore";
 import { useUploadImage } from "../../../hooks/useUploadImage";
 import { useCreateProduct } from "../../../hooks/useCreateProduct";
-import { dataURLtoBlob } from "../../../lib/utils";
+import { dataURLtoBlob } from "@/lib";
+
 
 const HIDDEN_INPUT_STYLE = { display: "none" as const };
 const PREVIEW_IMG_STYLE = { maxWidth: 200 };
