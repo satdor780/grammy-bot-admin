@@ -9,7 +9,7 @@ import { APP_ROUTES } from "@/constants";
 export const Header = () => {
   const location = useLocation();
 
-  const activePage = APP_ROUTES.filter((route) => route.path === location.pathname)
+  const activePage = APP_ROUTES.filter((route) => route.path === location.pathname)[0]
 
   const [open, setOpen] = useState(false);
   const user = useTelegramStore((s) => s.user);
@@ -32,7 +32,7 @@ export const Header = () => {
       </div>
       <Separator />
       <h1 className="text-2xl font-semibold tracking-tight py-2 flex justify-between items-center ">
-        {activePage[0].name} <span>user: {user?.first_name}</span>
+        {activePage ? activePage.name: APP_ROUTES[0].name} <span>user: {user?.first_name}</span>
       </h1>
     </>
   );
