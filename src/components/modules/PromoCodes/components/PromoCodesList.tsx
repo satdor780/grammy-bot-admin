@@ -129,7 +129,7 @@ export const PromoCodesList = () => {
                       <div className="flex justify-end items-center gap-2 w-full pt-5 flex-wrap">
                         <Dialog>
                           <DialogTrigger asChild>
-                            {promo.appliesToProducts && promo.appliesToProducts.length !== 0 && (
+                            {promo.appliesToProducts?.length !== 0 && (
                                 <button
                                     type="button"
                                     className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors text-sm font-medium"

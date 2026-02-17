@@ -266,13 +266,13 @@ export const PromoCodesCreate = () => {
                         ? new Date(formData.expiresAt)
                         : undefined
                     }
-                    // Разрешаем выбирать только прошедшие или сегодняшнюю дату
+                    // Запрещаем выбирать прошедшие даты, разрешаем только сегодня и будущее
                     disabled={(date) => {
                       const today = new Date();
                       today.setHours(0, 0, 0, 0);
                       const d = new Date(date);
                       d.setHours(0, 0, 0, 0);
-                      return d > today;
+                      return d < today;
                     }}
                     onSelect={(date) => {
                       setFormData((prev) => {
