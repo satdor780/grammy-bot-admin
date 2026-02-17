@@ -1,6 +1,12 @@
 import { api } from "./axios";
 import type { PromoCode } from "./getPromoCodes";
 
+export interface CreatePromoCodeProductPayload {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export interface CreatePromoCodeRequest {
   initData: string;
   code: string;
@@ -10,7 +16,7 @@ export interface CreatePromoCodeRequest {
   discountType: "percent" | "fixed";
   maxUses?: number;
   expiresAt?: string; // ISO date string (datetime-local format: YYYY-MM-DDTHH:mm)
-  appliesToProducts?: string[];
+  appliesToProducts?: CreatePromoCodeProductPayload[];
 }
 
 export interface CreatePromoCodeResponse {
