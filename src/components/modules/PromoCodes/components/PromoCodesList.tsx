@@ -1,7 +1,14 @@
-import { getPromoCodes, type PromoCode } from "@/api/getPromoCodes";
+import { getPromoCodes, type PromoCode, type PromoCodeProductRef } from "@/api/getPromoCodes";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/shadcn/ui/dialog";
 import { useTelegramStore } from "@/store";
 import { useQuery } from "@tanstack/react-query";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Package } from "lucide-react";
 import { useState } from "react";
 
 export const PromoCodesList = () => {
@@ -45,6 +52,32 @@ export const PromoCodesList = () => {
     return type === "percent"
       ? `-${promo.discount}%`
       : `-${promo.discount}`;
+  };
+
+  const ProductsList = ({ products }: { products?: PromoCodeProductRef[] }) => {
+    if (!products || products.length === 0) {
+      return (
+        <p className="text-muted-foreground text-sm py-2">
+          Applies to all products
+        </p>
+      );
+    }
+    return (
+      <ul className="space-y-2 max-h-60 overflow-y-auto">
+        {products.map((p) => (
+          <li
+            key={p.productId}
+            className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+          >
+            <Package className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <div className="min-w-0">
+              <span className="font-medium truncate block">{p.name}</span>
+              <span className="text-muted-foreground text-xs">{p.slug}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
   };
     return (
         <div className="space-y-4">
@@ -93,7 +126,24 @@ export const PromoCodesList = () => {
                           <span>Срок: {formatValidity(promo)}</span>
                         )}
                       </div>
-                      <div className="flex justify-end items-center w-full pt-5">
+                      <div className="flex justify-end items-center gap-2 w-full pt-5 flex-wrap">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors text-sm font-medium"
+                            >
+                              <Package className="h-4 w-4" />
+                              Active for
+                            </button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                              <DialogTitle>Products</DialogTitle>
+                            </DialogHeader>
+                            <ProductsList products={promo.appliesToProducts} />
+                          </DialogContent>
+                        </Dialog>
                         <button
                           type="button"
                           onClick={() => handleCopy(promo.code, promo._id)}
