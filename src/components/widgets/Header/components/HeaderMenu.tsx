@@ -9,20 +9,14 @@ import {
   CommandItem,
   CommandList,
 } from "../../../shadcn/ui/command";
-
-const routes = [
-  { name: "Create Product", path: "/create-product" },
-  { name: "Promo codes", path: "/promo-codes" },
-];
+import { APP_ROUTES } from "@/constants";
 
 export function HeaderMenu({
   open,
   setOpen,
-  setActivePage,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setActivePage: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const navigate = useNavigate();
 
@@ -33,13 +27,12 @@ export function HeaderMenu({
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Suggestions">
-            {routes.map((route) => (
+            {APP_ROUTES.map((route) => (
               <CommandItem
                 key={route.path}
                 onSelect={() => {
                   navigate(route.path);
                   setOpen(false);
-                  setActivePage(route.name);
                 }}
               >
                 {route.name}

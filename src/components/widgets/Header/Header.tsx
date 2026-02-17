@@ -3,10 +3,15 @@ import { Button } from "../../shadcn/ui/button";
 import { HeaderMenu } from "./components";
 import { Separator } from "../../shadcn/ui/separator";
 import { useTelegramStore } from "../../../store";
+import { useLocation } from "react-router-dom";
+import { APP_ROUTES } from "@/constants";
 
 export const Header = () => {
+  const location = useLocation();
+
+  const activePage = APP_ROUTES.filter((route) => route.path === location.pathname)
+
   const [open, setOpen] = useState(false);
-  const [activePage, setActivePage] = useState("Create Product");
   const user = useTelegramStore((s) => s.user);
 
   return (
@@ -23,12 +28,11 @@ export const Header = () => {
         <HeaderMenu
           open={open}
           setOpen={setOpen}
-          setActivePage={setActivePage}
         />
       </div>
       <Separator />
       <h1 className="text-2xl font-semibold tracking-tight py-2 flex justify-between items-center ">
-        {activePage} <span>user: {user?.first_name}</span>
+        {activePage[0].name} <span>user: {user?.first_name}</span>
       </h1>
     </>
   );
