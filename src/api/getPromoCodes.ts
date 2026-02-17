@@ -1,5 +1,11 @@
 import { api } from "./axios";
 
+export interface PromoCodeProductRef {
+  productId: string;
+  name: string;
+  slug: string;
+}
+
 export interface PromoCode {
   _id: string;
   code: string;
@@ -9,7 +15,7 @@ export interface PromoCode {
   discountType?: "percent" | "fixed";
   uses: number;
   maxUses?: number;
-  appliesToProducts?: string[];
+  appliesToProducts?: PromoCodeProductRef[];
   expiresAt?: string;
   createdAt: string;
   updatedAt: string;
