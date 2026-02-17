@@ -27,7 +27,7 @@ export interface GetPromoCodesResponse {
 }
 
 export async function getPromoCodes(
-  initData: string
+  initData: string,
 ): Promise<GetPromoCodesResponse> {
   const { data } = await api.get<GetPromoCodesResponse>("/api/promocode", {
     params: { initData },
