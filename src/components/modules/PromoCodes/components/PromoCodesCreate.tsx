@@ -1,6 +1,11 @@
 import { createPromoCode, init } from "@/api";
-import { Input } from "@/components/shadcn/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/shadcn/ui/popover";
+import { Button } from "@/components/shadcn/ui/button";
+import { Calendar } from "@/components/shadcn/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/shadcn/ui/popover";
 import { cn } from "@/lib";
 import { useTelegramStore } from "@/store";
 import type { Product } from "@/types";
@@ -11,18 +16,29 @@ import { useState } from "react";
 
 
 interface PromoCodeFormData {
-    code: string;
-    name: string;
-    source: string;
-    discountType: "percent" | "fixed";
-    discount: string;
-    maxUsages: string;
-    expiresAt: string; // datetime-local: YYYY-MM-DDTHH:mm
-  }
-  
-  const INPUT_CLASS =
-    "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
-  
+  code: string;
+  name: string;
+  source: string;
+  discountType: "percent" | "fixed";
+  discount: string;
+  maxUsages: string;
+  expiresAt: string; // datetime-local: YYYY-MM-DDTHH:mm
+}
+
+const INPUT_CLASS =
+  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+
+const formatDateTimeLocal = (date: Date) => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
 export const PromoCodesCreate = () => {
     const initData = useTelegramStore((s) => s.initData);
@@ -225,37 +241,57 @@ export const PromoCodesCreate = () => {
               </label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
                     className={cn(
-                      INPUT_CLASS,
-                      "flex items-center gap-2 text-left font-normal",
+                      "w-full justify-start text-left font-normal",
                       !formData.expiresAt && "text-muted-foreground",
                     )}
                   >
-                    <CalendarIcon className="h-4 w-4 shrink-0 opacity-50" />
+                    <CalendarIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
                     {formData.expiresAt
                       ? new Date(formData.expiresAt).toLocaleString("ru-RU", {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })
-                      : "Выберите дату и время"}
-                  </button>
+                      : "Выберите дату"}
+                  </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <div className="p-3">
-                    <Input
-                      type="datetime-local"
-                      value={formData.expiresAt}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
+                  <Calendar
+                    mode="single"
+                    selected={
+                      formData.expiresAt
+                        ? new Date(formData.expiresAt)
+                        : undefined
+                    }
+                    // Разрешаем выбирать только прошедшие или сегодняшнюю дату
+                    disabled={(date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      const d = new Date(date);
+                      d.setHours(0, 0, 0, 0);
+                      return d > today;
+                    }}
+                    onSelect={(date) => {
+                      setFormData((prev) => {
+                        if (!date) {
+                          return { ...prev, expiresAt: "" };
+                        }
+
+                        // При выборе даты устанавливаем время по умолчанию на конец дня (23:59)
+                        const withTime = new Date(date);
+                        withTime.setHours(23, 59, 0, 0);
+
+                        return {
                           ...prev,
-                          expiresAt: e.target.value,
-                        }))
-                      }
-                      className={INPUT_CLASS}
-                    />
-                  </div>
+                          expiresAt: formatDateTimeLocal(withTime),
+                        };
+                      });
+                    }}
+                    initialFocus
+                  />
                 </PopoverContent>
               </Popover>
             </div>
