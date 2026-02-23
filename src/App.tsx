@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { CreateProduct, PromoCodes } from "./components/modules";
+import { CreateProduct, PromoCodes, Transactions } from "./components/modules";
 import { DebugPanel, Header } from "./components/widgets";
 import { useInit } from "./hooks/useInit";
 import { useDebugStore } from "./store/debugStore";
@@ -29,6 +29,7 @@ function App() {
         <Route path="/" element={<Navigate to="/create-product" replace />} />
         <Route path="/create-product" element={<CreateProduct />} />
         <Route path="/promo-codes" element={<PromoCodes />} />
+        <Route path="/transactions" element={<Transactions />} />
       </Routes>
       <DebugPanel />
     </div>

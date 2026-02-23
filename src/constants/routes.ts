@@ -6,4 +6,5 @@ export interface AppRoute {
 export const APP_ROUTES: AppRoute[] = [
   { name: "Create Product", path: "/create-product" },
   { name: "Promo codes", path: "/promo-codes" },
+  { name: "Transactions", path: "/transactions" },
 ] as const;
