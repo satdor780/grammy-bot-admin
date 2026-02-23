@@ -110,6 +110,7 @@ export const Transactions = () => {
         <p className="text-sm text-muted-foreground">Баланс продавца</p>
         <p className="text-2xl font-bold">
           ${data?.seller_balance?.toFixed(2) ?? "—"}
+          {/* {JSON.stringify(data)} */}
         </p>
       </div>
 
