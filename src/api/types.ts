@@ -16,3 +16,31 @@ export interface User {
   updatedAt: string;
   __v: number;
 }
+
+// types/transactions.ts
+
+export interface ITransactionResponse {
+  _id: string;
+  userId: number;
+  basketOrderId: string;
+  totalAmount: number;
+  commissionAmount: number;
+  sellerAmount: number;
+  commissionRate: number;
+  status: "success" | "failed";
+  createdAt: string;
+}
+
+export interface IPagination {
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+}
+
+export interface ITransactionsResponse {
+  success: boolean;
+  seller_balance: number;
+  transactions: ITransactionResponse[];
+  pagination: IPagination;
+}
