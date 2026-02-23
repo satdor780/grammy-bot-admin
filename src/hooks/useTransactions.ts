@@ -25,11 +25,14 @@ export const useTransactions = ({
       initData: string;
       offset: number;
     }) => {
-      const res = await axios.post<ITransactionsResponse>("/api/transactions", {
-        initData,
-        limit: LIMIT,
-        offset,
-      });
+      const res = await axios.post<ITransactionsResponse>(
+        "http://localhost:3000/api/transactions",
+        {
+          initData,
+          limit: LIMIT,
+          offset,
+        },
+      );
       return res.data;
     },
     onSuccess: (res) => {
