@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { format } from "date-fns";
 import {
-
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -14,10 +13,16 @@ import { useTelegramStore } from "../../../store/telegramStore";
 import { useDebugStore } from "../../../store/debugStore";
 import { useTransactions } from "../../../hooks/useTransactions";
 import type { ITransactionResponse } from "@/api";
-import { Badge } from "@/components/shadcn/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/shadcn/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/shadcn/ui/table";
 import { Button } from "@/components/shadcn/ui/button";
-
+import { Spinner } from "@/components/shadcn/ui/spinner";
 
 // ── Колонки таблицы ────────────────────────────────────────────────────────
 const columns: ColumnDef<ITransactionResponse>[] = [
@@ -50,18 +55,18 @@ const columns: ColumnDef<ITransactionResponse>[] = [
     cell: ({ row }) =>
       `${((row.getValue("commissionRate") as number) * 100).toFixed(0)}%`,
   },
-  {
-    accessorKey: "status",
-    header: "Статус",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return (
-        <Badge variant={status === "success" ? "default" : "destructive"}>
-          {status === "success" ? "✓" : "✗"}
-        </Badge>
-      );
-    },
-  },
+  //   {
+  //     accessorKey: "status",
+  //     header: "Статус",
+  //     cell: ({ row }) => {
+  //       const status = row.getValue("status") as string;
+  //       return (
+  //         <Badge variant={status === "success" ? "default" : "destructive"}>
+  //           {status === "success" ? "✓" : "✗"}
+  //         </Badge>
+  //       );
+  //     },
+  //   },
 ];
 
 // ── Компонент ──────────────────────────────────────────────────────────────
@@ -102,9 +107,16 @@ export const Transactions = () => {
     fetchPage(initData, offset + limit);
   };
 
-  return (
-    <div className="w-[360px] mx-auto py-4 space-y-4">
+  if (isPending || !data) {
+    return (
+      <div className="w-full h-screen flex flex items-center justify-center">
+        <Spinner className="size-8" />
+      </div>
+    );
+  }
 
+  return (
+    <div className="mx-auto py-4 space-y-4">
       {/* ── Баланс ── */}
       <div className="rounded-xl border bg-card p-4 space-y-1">
         <p className="text-sm text-muted-foreground">Баланс продавца</p>
