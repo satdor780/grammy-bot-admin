@@ -1,7 +1,9 @@
 import type { InitResponse } from "./types.ts";
 
+const API_BASE = import.meta.env.VITE_SERVER_URI!;
+
 export async function init(initData: string): Promise<InitResponse> {
-  const res = await fetch("http://localhost:3000/api/init", {
+  const res = await fetch(`${API_BASE}/api/init`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

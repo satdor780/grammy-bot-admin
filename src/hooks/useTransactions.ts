@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { ITransactionsResponse } from "@/api";
 
 const LIMIT = 20;
-
+const API_BASE = import.meta.env.VITE_SERVER_URI!;
 export const useTransactions = ({
   onSuccess,
   onError,
@@ -26,7 +26,7 @@ export const useTransactions = ({
       offset: number;
     }) => {
       const res = await axios.post<ITransactionsResponse>(
-        "http://localhost:3000/api/transactions",
+        `${API_BASE}/api/transactions`,
         {
           initData,
           limit: LIMIT,
